@@ -54,17 +54,32 @@ function AddEditModal({ open, onOpenChange, task }: TaskFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!task) {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/task/add`,
-        {
-          method: "POST",
-          body: JSON.stringify(formData),
-        }
-      );
-      const createdData = await res.json();
-      console.log(createdData);
+    try {
+      if (!task) {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_APP_URL}/api/task/add`,
+          {
+            method: "POST",
+            body: JSON.stringify(formData),
+          }
+        );
+        const createdData = await res.json();
+        console.log(createdData);
+      } else {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_APP_URL}/api/task/update`,
+          {
+            method: "PUT",
+            body: JSON.stringify(formData),
+          }
+        );
+        const updatedData = await res.json();
+        console.log(updatedData);
+      }
+    } catch (error) {
+      console.log(error);
     }
+
     router.refresh();
     onOpenChange(false);
   };

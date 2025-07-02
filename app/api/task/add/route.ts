@@ -41,10 +41,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         error: {
-          message: "Missing required data.",
+          message: "Something went wrong.",
         },
       },
-      { status: 400 }
+      { status: 500 }
     );
   }
 }

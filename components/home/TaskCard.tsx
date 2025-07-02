@@ -16,6 +16,8 @@ import {
   Trash2,
   Lightbulb,
 } from "lucide-react";
+import AddEditModal from "../common/AddEditModal";
+import { DeleteTaskModal } from "./DeleteTaskModal";
 
 interface Task {
   id: string;
@@ -32,13 +34,15 @@ interface TaskCardProps {
 
 function TaskCard({ task }: TaskCardProps) {
   const [isSubtasksOpen, setIsSubtasksOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
   const handleSuggestSubtasks = () => {
     setIsSubtasksOpen(true);
   };
 
-  const onEdit = () => {};
-  const onDelete = () => {};
+  const onEdit = () => setIsModalOpen((prev: boolean) => !prev);
+  const onDelete = () => setIsDeleteModalOpen((prev: boolean) => !prev);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -89,6 +93,11 @@ function TaskCard({ task }: TaskCardProps) {
             <Edit className="w-4 h-4" />
             Edit
           </Button>
+          <AddEditModal
+            open={isModalOpen}
+            onOpenChange={setIsModalOpen}
+            task={task}
+          />
           <Button
             variant="outline"
             size="sm"
@@ -98,6 +107,12 @@ function TaskCard({ task }: TaskCardProps) {
             <Trash2 className="w-4 h-4" />
             Delete
           </Button>
+          <DeleteTaskModal
+            open={isDeleteModalOpen}
+            onOpenChange={setIsDeleteModalOpen}
+            id={task.id}
+            taskTitle={task.title}
+          />
           <Button
             size="sm"
             onClick={handleSuggestSubtasks}
