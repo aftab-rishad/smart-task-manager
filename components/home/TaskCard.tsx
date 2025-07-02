@@ -15,9 +15,11 @@ import {
   Edit,
   Trash2,
   Lightbulb,
+  Loader,
 } from "lucide-react";
 import AddEditModal from "../common/AddEditModal";
 import { DeleteTaskModal } from "./DeleteTaskModal";
+import { useRouter } from "next/navigation";
 
 interface Task {
   id: string;
@@ -36,9 +38,42 @@ function TaskCard({ task }: TaskCardProps) {
   const [isSubtasksOpen, setIsSubtasksOpen] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleSuggestSubtasks = () => {
-    setIsSubtasksOpen(true);
+  const router = useRouter();
+
+  const handleSuggestSubtasks = async () => {
+    setIsLoading(true);
+    const prompt = `Break the following task into 3 to 5 smaller, actionable subtasks. Respond with a plain list Task title: "${task.title}" and task description: "${task.description}" Only return the subtasks as a list. No explanation.`;
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/task/subtasks/generate`,
+        {
+          method: "POST",
+          body: JSON.stringify({ prompt }),
+        }
+      );
+      const createdData = await res.json();
+      const subTasks = createdData.text.split("* ").splice(1);
+
+      console.log({ ...task, subtasks: subTasks });
+
+      const updateRes = await fetch(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/task/update`,
+        {
+          method: "PUT",
+          body: JSON.stringify({ ...task, subtasks: subTasks }),
+        }
+      );
+      const updatedData = await updateRes.json();
+      console.log(updatedData);
+      setIsSubtasksOpen(true);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+    router.refresh();
   };
 
   const onEdit = () => setIsModalOpen((prev: boolean) => !prev);
@@ -115,11 +150,21 @@ function TaskCard({ task }: TaskCardProps) {
           />
           <Button
             size="sm"
+            disabled={isLoading}
             onClick={handleSuggestSubtasks}
             className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700"
           >
-            <Lightbulb className="w-4 h-4" />
-            Suggest Subtasks
+            {isLoading ? (
+              <>
+                <Loader className="w-4 h-4" />
+                Loading...
+              </>
+            ) : (
+              <>
+                <Lightbulb className="w-4 h-4" />
+                Suggest Subtasks
+              </>
+            )}
           </Button>
         </div>
 

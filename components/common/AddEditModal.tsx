@@ -64,6 +64,13 @@ function AddEditModal({ open, onOpenChange, task }: TaskFormProps) {
           }
         );
         const createdData = await res.json();
+        setFormData({
+          title: "",
+          description: "",
+          dueDate: "",
+          status: "Pending" as "Pending" | "Completed",
+          subtasks: [],
+        });
         console.log(createdData);
       } else {
         const res = await fetch(

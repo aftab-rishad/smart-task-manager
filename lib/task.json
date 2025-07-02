@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "id": "baad522a-862f-4a31-ab47-881d3f14c63c",
+    "title": "Prepare for job interview.",
+    "description": "Technical interview for React developer position.",
+    "dueDate": "2025-07-05",
+    "status": "Pending",
+    "subtasks": []
+  },
+  {
+    "id": "cace7285-d709-4a1f-b760-e3eb66432f3b",
+    "title": "Plan birthday party",
+    "description": "Plan a birthday party next week",
+    "dueDate": "2025-07-10",
+    "status": "Pending",
+    "subtasks": [
+      "Determine guest list and send invitations.\n",
+      "Decide on party theme, location, and menu.\n",
+      "Plan party activities and entertainment.\n",
+      "Arrange for decorations and supplies.\n",
+      "Confirm RSVPs and finalize details.\n"
+    ]
+  }
+]
